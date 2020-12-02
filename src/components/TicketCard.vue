@@ -1,7 +1,7 @@
 <template>
   <div class="shadow-custom rounded bg-white">
     <div class="flex flex-col lg:flex-row ">
-      <div class="flex flex-col lg:flex-grow justify-center lg:px-16 py-4">
+      <div class="flex flex-col lg:flex-grow justify-center lg:px-12 py-4">
         <div class="flex flex-grow flex-col lg:flex-row items-center">
           <div class="flex items-center space-x-1 mb-4 lg:mb-0">
             <img
@@ -37,8 +37,8 @@
             </div>
           </div>
         </div>
-        <div class="flex flex-col-reverse lg:flex-row  mt-4 relative">
-          <div class="flex justify-around p-2 lg:space-x-4 lg:absolute">
+        <div class="flex flex-col-reverse lg:flex-row  mt-4 ">
+          <div class="flex  p-2 lg:space-x-4">
             <a
               class="border-b-4 border-blue-200 border-dotted px-2 text-blue-600 text-sm"
               href="#"
@@ -50,9 +50,7 @@
               >Условия тарифа</a
             >
           </div>
-          <div
-            class="flex justify-center lg:flex-grow items-center text-gray-500 space-x-1 p-2"
-          >
+          <div class="flex :flex-grow items-center text-gray-500 space-x-1 p-2">
             <img
               src="@/assets/icons/ui/no-refundable.svg"
               alt="no-refundable"
