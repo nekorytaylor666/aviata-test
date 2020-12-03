@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/camelcase */
 export interface Airlines {
   KC: string;
   HY: string;
@@ -13,6 +14,8 @@ export interface Airlines {
   DV: string;
   TK: string;
 }
+
+export type AirlinesCode = keyof Airlines;
 
 export interface PriceDetails {
   base_raw: number;
@@ -129,6 +132,48 @@ export interface Flight {
   provider: string;
   refundable: boolean;
   provider_class: string;
+}
+
+export class FlightConstructor implements Flight {
+  itineraries: Itinerary[][];
+  price_details: PriceDetails;
+  price: string;
+  currency: string;
+  bonus_usage: boolean;
+  services: Services;
+  price_raw: number;
+  validating_carrier: string;
+  id: string;
+  has_meta: boolean;
+  has_offers: boolean;
+  best_time: number;
+  bonus_accrual: boolean;
+  bonus_accrual_details?: any;
+  bonus_usage_details?: any;
+  provider: string;
+  refundable: boolean;
+  provider_class: string;
+
+  constructor(flight: Flight) {
+    this.itineraries = flight.itineraries;
+    this.price_details = flight.price_details;
+    this.price = flight.price;
+    this.currency = flight.currency;
+    this.bonus_usage = flight.bonus_usage;
+    this.services = flight.services;
+    this.price_raw = flight.price_raw;
+    this.validating_carrier = flight.validating_carrier;
+    this.id = flight.id;
+    this.has_meta = flight.has_meta;
+    this.has_offers = flight.has_offers;
+    this.best_time = flight.best_time;
+    this.bonus_accrual = flight.bonus_accrual;
+    this.bonus_accrual_details = flight.bonus_accrual_details;
+    this.bonus_usage_details = flight.bonus_usage_details;
+    this.provider = flight.provider;
+    this.refundable = flight.refundable;
+    this.provider_class = flight.provider_class;
+  }
 }
 
 export interface DataRoot {

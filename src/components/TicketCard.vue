@@ -61,7 +61,7 @@
       </div>
       <div class="bg-gray-200  space-y-3 p-4">
         <p class="text-2xl lg:text-3xl">
-          590 990 <span class="text-xl">₸</span>
+          {{ flight.price }} <span class="text-xl">₸</span>
         </p>
         <button
           class="bg-green-500  text-white font-bold text-xl lg:text-2xl py-2 rounded w-2/3 lg:w-full"
@@ -83,10 +83,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Flight, FlightConstructor } from '../interface/Data/DataInterfaces';
 
 @Component
-export default class TicketCard extends Vue {}
+export default class TicketCard extends Vue {
+  @Prop(FlightConstructor) readonly flight!: Flight;
+}
 </script>
 
 <style scoped>

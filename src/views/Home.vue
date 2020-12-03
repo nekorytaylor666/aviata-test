@@ -1,158 +1,109 @@
 <template>
   <div class="container mx-auto p-2 md:p-4">
-    <div class="rounded bg-white shadow p-4 mb-8">
-      <div class="flex flex-col ">
-        <div class="search-bar-ticket-option flex h-8 mb-4">
-          <div class="flex">
-            <input
-              class="hidden"
-              type="radio"
-              name="ticket-option"
-              id="in-n-out"
-              value="in-n-out"
-              checked
-            />
-            <label for="in-n-out">Туда и обратно</label>
-          </div>
-          <div class="divider"></div>
-          <div class="flex">
-            <input
-              class="hidden"
-              type="radio"
-              name="ticket-option"
-              id="one-way"
-              value="one-way"
-            />
-            <label for="one-way" class="">В одну сторону</label>
-          </div>
-        </div>
-        <div class="flex space-x-2">
-          <div class="flex space-x-2">
-            <input
-              class="search-bar-text-input p-2 px-4"
-              type="text"
-              name="origin"
-              id="origin"
-            />
-            <div class="flex items-center w-6">
-              <img src="@/assets/icons/ui/exchange.png" alt="exchange" />
-            </div>
-            <input
-              class="search-bar-text-input p-2 px-4"
-              type="text"
-              name="destination"
-              id="destination"
-            />
-          </div>
-          <input
-            class="search-bar-text-input p-2 px-4"
-            type="text"
-            name="origin"
-            id="origin"
-          />
-          <input
-            class="search-bar-text-input p-2 px-4"
-            type="text"
-            name="origin"
-            id="origin"
-          />
-          <input
-            class="search-bar-text-input p-2 px-4"
-            type="text"
-            name="origin"
-            id="origin"
-          />
-          <button
-            class="bg-green-500  text-white font-bold text-xl lg:text-2xl py-2 rounded w-2/3 lg:w-full"
-          >
-            Найти
-          </button>
-        </div>
-      </div>
-    </div>
+    <search-bar />
     <div class="flex flex-col lg:flex-row lg:space-x-8">
       <div class="lg:w-2/12 space-y-4">
         <div class="rounded bg-white shadow p-4 pb-8">
           <h3 class="font-bold text-left mb-4">Опции тарифа</h3>
           <ul class="space-y-4">
-            <li class="flex items-center space-x-4 text-left">
-              <input type="checkbox" name="direct" id="direct" />
-              <label for="direct">Только прямые</label>
-            </li>
-            <li class="flex items-center space-x-4 text-left">
-              <input type="checkbox" name="luggage" id="luggage" />
-              <label for="luggage">Только с багажом</label>
-            </li>
-            <li class="flex items-center space-x-4 text-left">
-              <input type="checkbox" name="return" id="return" />
-              <label for="return">Только возвратные</label>
-            </li>
+            <aviata-check-box
+              v-for="ticketOption in ticketOptions"
+              :key="ticketOption.name"
+              :name="ticketOption.name"
+              :label="ticketOption.label"
+            />
           </ul>
         </div>
         <div class="rounded bg-white shadow p-4 pb-8">
           <h3 class="font-bold text-left mb-4">Авиакомпании</h3>
           <ul class="space-y-4">
-            <li class="flex items-center space-x-4 text-left">
-              <input type="checkbox" name="all" id="all" />
-              <label for="direct">Только прямые</label>
-            </li>
-            <li class="flex items-center space-x-4 text-left">
-              <input type="checkbox" name="air-astana" id="air-astana" />
-              <label for="luggage">Air Astana</label>
-            </li>
-            <li class="flex items-center space-x-4 text-left">
-              <input type="checkbox" name="bek-air" id="bek-air" />
-              <label for="return">Bek Air</label>
-            </li>
-            <li class="flex items-center space-x-4 text-left">
-              <input type="checkbox" name="fly-arystan" id="fly-arystan" />
-              <label for="direct">Fly Arystan</label>
-            </li>
-            <li class="flex items-center space-x-4 text-left">
-              <input type="checkbox" name="scat" id="scat" />
-              <label for="luggage">SCAT Airlines</label>
-            </li>
-            <li class="flex items-center space-x-4 text-left">
-              <input type="checkbox" name="lufthans" id="lufthans" />
-              <label for="return">Lufthansa</label>
-            </li>
-            <li class="flex items-center space-x-4 text-left">
-              <input type="checkbox" name="turkish-air" id="turkish-air" />
-              <label for="luggage">Turkish Airlines</label>
-            </li>
-            <li class="flex items-center space-x-4 text-left">
-              <input type="checkbox" name="china-air" id="china-air" />
-              <label for="return">China Southern Air</label>
-            </li>
+            <aviata-check-box
+              v-for="airline in airlines"
+              :key="airline.code"
+              :name="airline.code"
+              :label="airline.title"
+            />
           </ul>
         </div>
       </div>
       <div class="lg:w-10/12 space-y-4">
-        <TicketCard />
-        <TicketCard />
-        <TicketCard />
-        <TicketCard />
-        <TicketCard />
-        <TicketCard />
-        <TicketCard />
-        <TicketCard />
-        <TicketCard />
-        <TicketCard />
-        <TicketCard />
-        <TicketCard />
+        <ticket-card
+          v-for="ticket in tickets"
+          :key="ticket.id"
+          :flight="ticket"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
+import AviataCheckBox from '@/components/AviataCheckBox.vue';
+import SearchBar from '@/components/SearchBar.vue';
 import TicketCard from '@/components/TicketCard.vue';
 import { Component, Vue } from 'vue-property-decorator';
-
+import { Airlines } from '../interface/Data/DataInterfaces';
+import { getKeyValue } from '../utils/index';
+import { getAllFlights } from '../data/DataHandlers';
 @Component({
-  components: { TicketCard }
+  components: { TicketCard, AviataCheckBox, SearchBar }
 })
-export default class Home extends Vue {}
+export default class Home extends Vue {
+  ticketOptions = [
+    {
+      name: 'direct-only',
+      label: 'Только прямые'
+    },
+    {
+      name: 'luggage',
+      label: 'Только с багажом'
+    },
+    {
+      name: 'return',
+      label: 'Только возвратные'
+    }
+  ];
+
+  airlinesObject: Airlines = {
+    KC: 'Air Astana',
+    HY: 'Uzbekistan Airways',
+    EK: 'Emirates',
+    HR: 'HR',
+    FZ: 'Flydubai',
+    S7: 'S7 Airlines',
+    LH: 'Lufthansa',
+    BT: 'Air Baltic',
+    CZ: 'China Southern Airlines',
+    SU: 'Aeroflot',
+    B2: 'Belavia',
+    DV: 'SCAT Airlines',
+    TK: 'Turkish Airlines'
+  };
+
+  get airlines() {
+    const airlinesArray = [];
+    for (const airlineCode in this.airlinesObject) {
+      if (
+        Object.prototype.hasOwnProperty.call(this.airlinesObject, airlineCode)
+      ) {
+        const airlineTitle = getKeyValue<keyof Airlines, Airlines>(
+          airlineCode as keyof Airlines
+        )(this.airlinesObject);
+        const airlineTmpObj = {
+          code: airlineCode,
+          title: airlineTitle
+        };
+        airlinesArray.push(airlineTmpObj);
+      }
+    }
+    return airlinesArray;
+  }
+
+  get tickets() {
+    const res = getAllFlights();
+    return res;
+  }
+}
 </script>
 
 <style lang="scss" scoped>
