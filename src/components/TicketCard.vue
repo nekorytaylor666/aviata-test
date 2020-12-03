@@ -5,10 +5,10 @@
         <div class="flex flex-grow flex-col lg:flex-row items-center">
           <div class="flex items-center space-x-1 mb-4 lg:mb-0">
             <img
-              src="@/assets/icons/avia-providers/air-astana.svg"
+              class="w-48 object-contain"
+              src="../assets/icons/avia-providers/KC.svg"
               alt="helllo"
             />
-            <p class="font-semibold text-xl">Air astana</p>
           </div>
           <div class="flex flex-grow items-center justify-center space-x-8">
             <div class="flex-col">
@@ -131,6 +131,10 @@ export default class TicketCard extends Vue {
     const { hours, minutes } = timeObj;
     const timeString = `${hours} ч ${minutes} м`;
     return timeString;
+  }
+
+  get provider() {
+    return 'DV';
   }
 
   get arrivalDate() {
