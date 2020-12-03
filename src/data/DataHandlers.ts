@@ -6,5 +6,7 @@ export const getAirlines = () => {
 };
 
 export const getAllFlights = (): Flight[] => {
-  return (results.flights as unknown) as Flight[];
+  const res = (results.flights as unknown) as Flight[];
+  console.log(res);
+  return res;
 };

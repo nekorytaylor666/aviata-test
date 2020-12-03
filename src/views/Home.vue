@@ -101,6 +101,7 @@ export default class Home extends Vue {
 
   get tickets() {
     const res = getAllFlights();
+    console.log('res:', res);
     return res;
   }
 }

@@ -12,23 +12,31 @@
           </div>
           <div class="flex flex-grow items-center justify-center space-x-8">
             <div class="flex-col">
-              <p class="text-sm">25 ноя, вс</p>
-              <p class="font-semibold text-2xl lg:text-3xl">23:25</p>
+              <p class="text-sm">{{ departureDate }}</p>
+              <p class="font-semibold text-2xl lg:text-3xl">
+                {{ departureTime }}
+              </p>
             </div>
             <div class="w-48">
               <div class="flex justify-between items-center">
-                <div class="text-xs text-gray-500">TSC</div>
-                <div class="text-sm">4ч 20мин</div>
-                <div class="text-xs text-right text-gray-500">TQL</div>
+                <div class="text-xs text-gray-500">{{ originCityCode }}</div>
+                <div class="text-sm">{{ flightTime }}</div>
+                <div class="text-xs text-right text-gray-500">
+                  {{ departureCityCode }}
+                </div>
               </div>
               <div class="flex justify-between items-center relative">
-                <div class="graph-circle"></div>
+                <div
+                  v-for="(layover, index) in numberOfLayovers"
+                  :key="index"
+                  class="graph-circle"
+                ></div>
                 <div class="graph-circle"></div>
                 <div class="graph-circle"></div>
                 <div class="absolute graph-line w-full "></div>
               </div>
               <div class="flex justify-center">
-                <p class="text-sm text-red-400">через Шымкент, 1 ч 50 м</p>
+                <p class="text-sm text-red-400">{{ numberOfLayovers }}</p>
               </div>
             </div>
             <div class="flex-col">
@@ -50,7 +58,10 @@
               >Условия тарифа</a
             >
           </div>
-          <div class="flex :flex-grow items-center text-gray-500 space-x-1 p-2">
+          <div
+            v-if="!flight.refundable"
+            class="flex :flex-grow items-center text-gray-500 space-x-1 p-2"
+          >
             <img
               src="@/assets/icons/ui/no-refundable.svg"
               alt="no-refundable"
@@ -85,10 +96,53 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import { Flight, FlightConstructor } from '../interface/Data/DataInterfaces';
+import {
+  addZero,
+  getDayWeekTitle,
+  getMonthTitle,
+  parseDate,
+  secondsToTime
+} from '../utils/dateUtils';
 
 @Component
 export default class TicketCard extends Vue {
-  @Prop(FlightConstructor) readonly flight!: Flight;
+  @Prop() readonly flight!: Flight;
+  itineraries = this.flight.itineraries[0][0];
+  get departureDate() {
+    const date = parseDate(this.itineraries.dep_date);
+    const day = date.getUTCDate();
+    const month = getMonthTitle(date.getMonth());
+    const weekDay = getDayWeekTitle(date.getDay());
+    return `${day} ${month.short}, ${weekDay.short}`;
+  }
+  get departureTime() {
+    const date = parseDate(this.itineraries.dep_date);
+    const hour = addZero(date.getUTCHours());
+    const minutes = addZero(date.getUTCMinutes());
+    return `${hour}:${minutes}`;
+  }
+
+  get flightTime() {
+    const bestTime = this.flight.best_time;
+    const timeObj = secondsToTime(bestTime);
+    const { hours, minutes } = timeObj;
+    const timeString = `${hours} ч ${minutes} м`;
+    return timeString;
+  }
+
+  get numberOfLayovers() {
+    const flights = this.itineraries.segments;
+    return flights.length - 1;
+  }
+
+  get originCityCode() {
+    return this.itineraries.segments[0].origin_code;
+  }
+
+  get departureCityCode() {
+    return this.itineraries.segments[this.itineraries.segments.length - 1]
+      .dest_code;
+  }
 }
 </script>
 
