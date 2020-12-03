@@ -40,8 +40,10 @@
               </div>
             </div>
             <div class="flex-col">
-              <p class="text-sm">25 ноя, вс</p>
-              <p class="font-semibold text-2xl lg:text-3xl">23:25</p>
+              <p class="text-sm">{{ arrivalDate }}</p>
+              <p class="font-semibold text-2xl lg:text-3xl">
+                {{ arrivalTime }}
+              </p>
             </div>
           </div>
         </div>
@@ -95,7 +97,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import { Flight, FlightConstructor } from '../interface/Data/DataInterfaces';
+import { Flight } from '../interface/Data/DataInterfaces';
 import {
   addZero,
   getDayWeekTitle,
@@ -108,12 +110,13 @@ import {
 export default class TicketCard extends Vue {
   @Prop() readonly flight!: Flight;
   itineraries = this.flight.itineraries[0][0];
+  segments = this.itineraries.segments;
   get departureDate() {
     const date = parseDate(this.itineraries.dep_date);
     const day = date.getUTCDate();
     const month = getMonthTitle(date.getMonth());
     const weekDay = getDayWeekTitle(date.getDay());
-    return `${day} ${month.short}, ${weekDay.short}`;
+    return `${day} ${month.short}, ${weekDay.short}`.toLowerCase();
   }
   get departureTime() {
     const date = parseDate(this.itineraries.dep_date);
@@ -128,6 +131,21 @@ export default class TicketCard extends Vue {
     const { hours, minutes } = timeObj;
     const timeString = `${hours} ч ${minutes} м`;
     return timeString;
+  }
+
+  get arrivalDate() {
+    const date = parseDate(this.itineraries.arr_date);
+    const day = date.getUTCDate();
+    const month = getMonthTitle(date.getMonth());
+    const weekDay = getDayWeekTitle(date.getDay());
+    return `${day} ${month.short}, ${weekDay.short}`.toLowerCase();
+  }
+
+  get arrivalTime() {
+    const date = parseDate(this.itineraries.arr_date);
+    const hour = addZero(date.getUTCHours());
+    const minutes = addZero(date.getUTCMinutes());
+    return `${hour}:${minutes}`;
   }
 
   get numberOfLayovers() {
