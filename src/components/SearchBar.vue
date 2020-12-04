@@ -71,9 +71,9 @@
             id="origin"
           />
         </div>
-        <div class="flex lg:w-72">
+        <div class="flex flex-1">
           <button
-            class="bg-green-500 w-full text-white font-bold text-xl lg:text-2xl py-2 rounded  ;"
+            class="bg-aviataGreen w-full text-white font-bold text-xl lg:text-2xl py-2 rounded"
           >
             Найти
           </button>

@@ -18,7 +18,7 @@
                 {{ departureTime }}
               </p>
             </div>
-            <div class="w-48">
+            <div class="w-40 lg:w-72">
               <div class="flex justify-between items-center">
                 <div class="text-xs text-gray-500">{{ originCityCode }}</div>
                 <div class="text-sm">{{ flightTime }}</div>
@@ -36,8 +36,14 @@
                 <div class="graph-circle"></div>
                 <div class="absolute graph-line w-full "></div>
               </div>
-              <div class="flex justify-center">
-                <p class="text-sm text-red-400">{{ numberOfLayovers }}</p>
+              <div class="flex justify-center flex-col">
+                <p
+                  v-for="layover in layoverArray"
+                  :key="layover"
+                  class="text-sm text-red-400"
+                >
+                  {{ layover }}
+                </p>
               </div>
             </div>
             <div class="flex-col">
@@ -51,12 +57,12 @@
         <div class="flex flex-col-reverse lg:flex-row  mt-4 ">
           <div class="flex  p-2 lg:space-x-4">
             <a
-              class="border-b-4 border-blue-200 border-dotted px-2 text-blue-600 text-sm"
+              class="border-b-2 border-aviataDarkBlue border-dashed px-2 text-aviataDarkBlue text-sm"
               href="#"
               >Детали перелета</a
             >
             <a
-              class="border-b-4 border-blue-200 border-dotted px-2 text-blue-600 text-sm"
+              class="border-b-2 border-aviataDarkBlue border-dashed px-2 text-aviataDarkBlue text-sm"
               href="#"
               >Условия тарифа</a
             >
@@ -73,12 +79,12 @@
           </div>
         </div>
       </div>
-      <div class="bg-gray-200  space-y-3 p-4">
+      <div class="gray-bg  space-y-3 p-4">
         <p class="text-2xl lg:text-3xl">
           {{ flight.price }} <span class="text-xl">₸</span>
         </p>
         <button
-          class="bg-green-500  text-white font-bold text-xl lg:text-2xl py-2 rounded w-2/3 lg:w-full"
+          class="bg-aviataGreen  text-white font-bold text-xl lg:text-2xl py-2 rounded w-2/3 lg:w-full"
         >
           Выбрать
         </button>
@@ -86,7 +92,7 @@
         <div class="flex space-x-2 items-center justify-center">
           <p class="text-xs lg:text-sm ">Нет багажа</p>
           <button
-            class="bg-blue-200 text-blue-500 font-bold text-xs lg:text-sm  px-2 py-1 rounded"
+            class="bg-aviataLightBlue text-aviataDarkBlue font-bold text-xs lg:text-sm  px-2 py-1 rounded"
           >
             + Добавить багаж
           </button>
@@ -154,15 +160,40 @@ export default class TicketCard extends Vue {
     return flights.length - 1;
   }
   get originCityCode() {
+    //first segment and get its dest code
     return this.segments[0].origin_code;
   }
   get departureCityCode() {
+    //take last segment and get its dest code
     return this.itineraries.segments[this.itineraries.segments.length - 1]
       .dest_code;
   }
   get airlineProviderLogo() {
     const airlineAssetsUrl = 'https://aviata.kz/static/airline-logos/80x80';
     return `${airlineAssetsUrl}/${this.itineraries.carrier}.png`;
+  }
+  get layoverArray() {
+    //direct flight has only one segment with origin and destination
+    //flight with layover has more than one segment;
+    const numberOfLayovers = this.itineraries.segments.length - 1;
+    //if we see that there is only one segment we assume that this is direct flight
+    if (numberOfLayovers === 0) {
+      return ['Прямой рейс'];
+    }
+    //in case there are more than one layover we create array of layovers to iterate and push create layover string to this array
+    const layovers: string[] = [];
+    for (let index = 0; index < numberOfLayovers; index++) {
+      const segment = this.segments[index];
+      const destName = segment.dest;
+      //layovers is an array with amount of seconds which it takes for layover
+      //we conver it to time string with method secondToTime
+      const layoverTime = secondsToTime(this.itineraries.layovers[index]);
+      const { hours, minutes } = layoverTime;
+      const timeString = `${hours} ч ${minutes} м`;
+      const layoverString = `через ${destName}, ${timeString}`;
+      layovers.push(layoverString);
+    }
+    return layovers;
   }
 }
 </script>
@@ -191,5 +222,9 @@ export default class TicketCard extends Vue {
 
 .graph-line {
   border: 1px solid #b9b9b9;
+}
+
+.gray-bg {
+  background-color: #f5f5f5;
 }
 </style>

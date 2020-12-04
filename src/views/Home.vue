@@ -11,6 +11,7 @@
               :key="ticketOption.name"
               :name="ticketOption.name"
               :label="ticketOption.label"
+              :checked="ticketOption.checked"
               @check="onCheckTicketOption"
             />
           </ul>
@@ -20,13 +21,21 @@
           <ul class="space-y-4">
             <aviata-check-box
               v-for="airlineBox in airlinesCheckboxes"
-              :key="airlineBox.code"
-              :name="airlineBox.code"
-              :label="airlineBox.title"
+              :key="airlineBox.name"
+              :name="airlineBox.name"
+              :label="airlineBox.label"
               :checked="airlineBox.checked"
               @check="onCheckAirline"
             />
           </ul>
+        </div>
+        <div class="flex justify-start outline-none">
+          <button
+            class="border-b-2 border-aviataDarkBlue border-dashed px-2 text-aviataDarkBlue "
+            @click="removeFilters"
+          >
+            Сбросить фильтры
+          </button>
         </div>
       </div>
       <div class="lg:w-10/12 space-y-4">
@@ -49,43 +58,62 @@ import SearchBar from '@/components/SearchBar.vue';
 import TicketCard from '@/components/TicketCard.vue';
 import { Component, Vue } from 'vue-property-decorator';
 import { Airlines, Flight } from '../interface/Data/DataInterfaces';
+
+interface CheckBox {
+  name: string;
+  label: string;
+  checked: boolean;
+}
+
 @Component({
   components: { TicketCard, AviataCheckBox, SearchBar }
 })
 export default class Home extends Vue {
-  ticketOptionsBoxes = [
-    {
-      name: 'direct-only',
-      label: 'Только прямые',
-      checked: false
-    },
-    {
-      name: 'luggage',
-      label: 'Только с багажом',
-      checked: false
-    },
-    {
-      name: 'refundable',
-      label: 'Только возвратные',
-      checked: false
-    }
-  ];
+  ticketOptionsBoxes: CheckBox[] = [];
+  airlinesCheckboxes: CheckBox[] = [];
 
-  airlinesCheckboxes = [
-    { code: 'KC', title: 'Air Astana', checked: false },
-    { code: 'HY', title: 'Uzbekistan Airways', checked: false },
-    { code: 'EK', title: 'Emirates', checked: false },
-    { code: 'HR', title: 'HR', checked: false },
-    { code: 'FZ', title: 'Flydubai', checked: false },
-    { code: 'S7', title: 'S7 Airlines', checked: false },
-    { code: 'LH', title: 'Lufthansa', checked: false },
-    { code: 'BT', title: 'Air Baltic', checked: false },
-    { code: 'CZ', title: 'China Southern Airlines', checked: false },
-    { code: 'SU', title: 'Aeroflot', checked: false },
-    { code: 'B2', title: 'Belavia', checked: false },
-    { code: 'DV', title: 'SCAT Airlines', checked: false },
-    { code: 'TK', title: 'Turkish Airlines', checked: false }
-  ];
+  created() {
+    this.initCheckboxes();
+  }
+  initCheckboxes() {
+    this.ticketOptionsBoxes = [
+      {
+        name: 'direct-only',
+        label: 'Только прямые',
+        checked: false
+      },
+      {
+        name: 'luggage',
+        label: 'Только с багажом',
+        checked: false
+      },
+      {
+        name: 'refundable',
+        label: 'Только возвратные',
+        checked: false
+      }
+    ];
+
+    this.airlinesCheckboxes = [
+      { name: 'KC', label: 'Air Astana', checked: false },
+      { name: 'HY', label: 'Uzbekistan Airways', checked: false },
+      { name: 'EK', label: 'Emirates', checked: false },
+      { name: 'HR', label: 'HR', checked: false },
+      { name: 'FZ', label: 'Flydubai', checked: false },
+      { name: 'S7', label: 'S7 Airlines', checked: false },
+      { name: 'LH', label: 'Lufthansa', checked: false },
+      { name: 'BT', label: 'Air Baltic', checked: false },
+      { name: 'CZ', label: 'China Southern Airlines', checked: false },
+      { name: 'SU', label: 'Aeroflot', checked: false },
+      { name: 'B2', label: 'Belavia', checked: false },
+      { name: 'DV', label: 'SCAT Airlines', checked: false },
+      { name: 'TK', label: 'Turkish Airlines', checked: false }
+    ];
+  }
+
+  removeFilters() {
+    this.initCheckboxes();
+  }
 
   filterByAirline(arr: Flight[], airlineCodes: (keyof Airlines)[]) {
     return arr.filter(el =>
@@ -98,18 +126,21 @@ export default class Home extends Vue {
     options: ('direct-only' | 'luggage' | 'refundable')[]
   ) {
     let res: Flight[] = arr;
-    console.log(res);
+    //find checked options
     const directOnly = options.some(option => option === 'direct-only');
     const luggage = options.some(option => option === 'luggage');
     const refundable = options.some(option => option === 'refundable');
+    //if direct we check for flights with only one segment
     if (directOnly) {
       res = res.filter(
         flight => flight.itineraries[0][0].segments.length === 1
       );
     }
+    //if luggage we check for flights with service 20kg only
     if (luggage) {
       res = res.filter(flight => !!flight.services['20KG']);
     }
+    //if refundable we check for flights with refundable set true
     if (refundable) {
       res = res.filter(flight => flight.itineraries[0][0].refundable);
     }
@@ -121,7 +152,7 @@ export default class Home extends Vue {
     const airlineCode = e.target.name;
     const isChecked = e.target.checked;
     const indexOfAirline = this.airlinesCheckboxes.findIndex(
-      airline => airline.code === airlineCode
+      airline => airline.name === airlineCode
     );
 
     this.airlinesCheckboxes[indexOfAirline].checked = isChecked;
@@ -141,7 +172,7 @@ export default class Home extends Vue {
     const codes: string[] = [];
     this.airlinesCheckboxes.map(airlineBox => {
       if (airlineBox.checked) {
-        codes.push(airlineBox.code);
+        codes.push(airlineBox.name);
       }
     });
     return codes;
@@ -157,6 +188,7 @@ export default class Home extends Vue {
   }
 
   get tickets() {
+    //get all tickets from store
     const res = this.$store.state.flights;
     return res;
   }
