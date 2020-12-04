@@ -116,6 +116,9 @@ export default class Home extends Vue {
   }
 
   filterByAirline(arr: Flight[], airlineCodes: (keyof Airlines)[]) {
+    if (airlineCodes.length === 0) {
+      return arr;
+    }
     return arr.filter(el =>
       airlineCodes.some(code => el.itineraries[0][0].carrier === code)
     );

@@ -90,7 +90,7 @@
         </button>
         <p class="text-xs lg:text-sm text-gray-500">Цена за всех пассажиров</p>
         <div class="flex space-x-2 items-center justify-center">
-          <p class="text-xs lg:text-sm ">Нет багажа</p>
+          <p class="text-xs lg:text-sm w-24">{{ luggageService }}</p>
           <button
             class="bg-aviataLightBlue text-aviataDarkBlue font-bold text-xs lg:text-sm  px-2 py-1 rounded"
           >
@@ -194,6 +194,15 @@ export default class TicketCard extends Vue {
       layovers.push(layoverString);
     }
     return layovers;
+  }
+  get luggageService() {
+    const _20kg = this.flight.services['20KG'];
+    const _0pc = this.flight.services['0PC'];
+    const _1pc = this.flight.services['1PC'];
+    if (_20kg) return '20 кг багажа';
+    if (_0pc) return 'Нет багажа';
+    if (_1pc) return 'Ручная кладь';
+    return '';
   }
 }
 </script>
