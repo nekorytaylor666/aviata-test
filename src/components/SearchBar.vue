@@ -25,49 +25,55 @@
           <label for="one-way" class="">В одну сторону</label>
         </div>
       </div>
-      <div class="flex space-x-2">
-        <div class="flex space-x-2">
+      <div
+        class="grid grid-cols-1 lg:flex  space-y-4 lg:space-y-0 lg:space-x-2"
+      >
+        <div class="flex space-x-2  justify-center">
           <input
-            class="search-bar-text-input p-2 px-4"
+            class="search-bar-text-input p-2 px-4 w-full"
             type="text"
             name="origin"
             id="origin"
           />
-          <div class="flex items-center w-6">
-            <img src="@/assets/icons/ui/exchange.png" alt="exchange" />
+          <div class="flex items-center">
+            <img
+              width="40"
+              src="@/assets/icons/ui/exchange.png"
+              alt="exchange"
+            />
           </div>
           <input
-            class="search-bar-text-input p-2 px-4"
+            class="search-bar-text-input p-2 px-4 w-full"
             type="text"
             name="destination"
             id="destination"
           />
         </div>
-        <div>
+        <div class="flex space-x-2">
           <input
-            class="search-bar-text-input p-2 px-4"
+            class="search-bar-text-input p-2 px-4 w-full"
             type="text"
             name="origin"
             id="origin"
           />
           <input
-            class="search-bar-text-input p-2 px-4"
-            type="text"
-            name="origin"
-            id="origin"
-          />
-        </div>
-        <div>
-          <input
-            class="search-bar-text-input p-2 px-4"
+            class="search-bar-text-input p-2 px-4 w-full"
             type="text"
             name="origin"
             id="origin"
           />
         </div>
-        <div>
+        <div class="flex ">
+          <input
+            class="search-bar-text-input p-2 px-4 w-full"
+            type="text"
+            name="origin"
+            id="origin"
+          />
+        </div>
+        <div class="flex lg:w-72">
           <button
-            class="bg-green-500  text-white font-bold text-xl lg:text-2xl py-2 rounded w-2/3 lg:w-full"
+            class="bg-green-500 w-full text-white font-bold text-xl lg:text-2xl py-2 rounded  ;"
           >
             Найти
           </button>
@@ -84,4 +90,38 @@ import { Component, Vue } from 'vue-property-decorator';
 export default class SearchBar extends Vue {}
 </script>
 
-<style scoped></style>
+<style scoped>
+.search-bar-ticket-option input[type='radio'] {
+  display: none;
+}
+
+.search-bar-ticket-option label {
+  display: inline-block;
+  width: 150px;
+  font-weight: bold;
+  color: #ccc;
+  text-align: left;
+  font-family: Arial;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all ease-in-out 0.2s;
+}
+
+.search-bar-ticket-option input[type='radio']:checked + label {
+  border-bottom: 2px solid green;
+  color: #000;
+}
+
+.divider {
+  height: 100%;
+  border: 1px solid #ccc;
+  margin: 0 1rem;
+}
+
+.search-bar-text-input {
+  background: #e5e5e5;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  outline: none;
+}
+</style>

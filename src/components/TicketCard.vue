@@ -3,12 +3,13 @@
     <div class="flex flex-col lg:flex-row ">
       <div class="flex flex-col lg:flex-grow justify-center lg:px-12 py-4">
         <div class="flex flex-grow flex-col lg:flex-row items-center">
-          <div class="flex items-center space-x-1 mb-4 lg:mb-0">
+          <div class="flex items-center space-x-2 mb-4 lg:mb-0">
             <img
-              class="w-48 object-contain"
-              src="../assets/icons/avia-providers/KC.svg"
+              class="w-8 object-contain"
+              :src="airlineProvider"
               alt="helllo"
             />
+            <p class="font-semibold text-xl">{{ carrierName }}</p>
           </div>
           <div class="flex flex-grow items-center justify-center space-x-8">
             <div class="flex-col">
@@ -133,8 +134,12 @@ export default class TicketCard extends Vue {
     return timeString;
   }
 
-  get provider() {
-    return 'DV';
+  get carrierCode() {
+    return this.itineraries.carrier;
+  }
+
+  get carrierName() {
+    return this.itineraries.carrier_name;
   }
 
   get arrivalDate() {
@@ -164,6 +169,11 @@ export default class TicketCard extends Vue {
   get departureCityCode() {
     return this.itineraries.segments[this.itineraries.segments.length - 1]
       .dest_code;
+  }
+
+  get airlineProvider() {
+    const airlineAssetsUrl = 'https://aviata.kz/static/airline-logos/80x80';
+    return `${airlineAssetsUrl}/${this.itineraries.carrier}.png`;
   }
 }
 </script>

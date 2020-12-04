@@ -2,7 +2,7 @@
   <div class="container mx-auto p-2 md:p-4">
     <search-bar />
     <div class="flex flex-col lg:flex-row lg:space-x-8">
-      <div class="lg:w-2/12 space-y-4">
+      <div class="lg:w-2/12 space-y-4  mb-8">
         <div class="rounded bg-white shadow p-4 pb-8">
           <h3 class="font-bold text-left mb-4">Опции тарифа</h3>
           <ul class="space-y-4">
@@ -44,7 +44,6 @@ import TicketCard from '@/components/TicketCard.vue';
 import { Component, Vue } from 'vue-property-decorator';
 import { Airlines } from '../interface/Data/DataInterfaces';
 import { getKeyValue } from '../utils/index';
-import { getAllFlights } from '../data/DataHandlers';
 @Component({
   components: { TicketCard, AviataCheckBox, SearchBar }
 })
@@ -100,46 +99,10 @@ export default class Home extends Vue {
   }
 
   get tickets() {
-    const res = getAllFlights();
-    console.log('res:', res);
+    const res = this.$store.state.flights;
     return res;
   }
 }
 </script>
 
-<style lang="scss" scoped>
-.search-bar-ticket-option input[type='radio'] {
-  display: none;
-}
-
-.search-bar-ticket-option label {
-  display: inline-block;
-  width: 150px;
-  font-weight: bold;
-  color: #ccc;
-  text-align: left;
-  font-family: Arial;
-  font-size: 16px;
-  cursor: pointer;
-  transition: all ease-in-out 0.2s;
-}
-
-.search-bar-ticket-option input[type='radio']:checked + label {
-  border-bottom: 2px solid green;
-  color: #000;
-}
-
-.divider {
-  height: 100%;
-  border: 1px solid #ccc;
-  margin: 0 1rem;
-}
-
-.search-bar-text-input {
-  background: #e5e5e5;
-  border: 1px solid #d9d9d9;
-  box-sizing: border-box;
-  border-radius: 4px;
-  outline: none;
-}
-</style>
+<style lang="scss" scoped></style>
