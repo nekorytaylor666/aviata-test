@@ -4,7 +4,13 @@
     <label :for="name"> </label> -->
     <label class="checkbox">
       <span class="checkbox__input">
-        <input type="checkbox" :name="name" :id="name" />
+        <input
+          type="checkbox"
+          :name="name"
+          :id="name"
+          :checked="checked"
+          @change="onChange($event)"
+        />
         <span class="checkbox__control">
           <svg viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
@@ -27,6 +33,11 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 export default class AviataCheckBox extends Vue {
   @Prop(String) readonly name!: string;
   @Prop(String) readonly label!: string;
+  @Prop(Boolean) readonly checked!: boolean;
+
+  onChange(e: any) {
+    this.$emit('check', e);
+  }
 }
 </script>
 

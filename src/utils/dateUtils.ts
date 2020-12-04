@@ -1,7 +1,6 @@
 //"YYYY/MM/DD HH:MM" format regex finds all matches from it;
 export const parseDate = (date: string) => {
-  const dateString = decodeURIComponent(date);
-  const matchArray = dateString.match(/([0-9]{1,4})/gm);
+  const matchArray = date.match(/([0-9]{1,4})/gm);
   const dateValues = matchArray?.map(value => parseInt(value));
   const year = dateValues?.[0] ?? 0;
   const month = dateValues?.[1] ?? 0;
@@ -9,6 +8,7 @@ export const parseDate = (date: string) => {
   const hour = dateValues?.[3] ?? 0;
   const minute = dateValues?.[4] ?? 0;
   const dateObj = new Date(year, month, day, hour, minute);
+
   return dateObj;
 };
 //the format of this type of dates is DD MMM, WD HH:MM the catch is that it inputs in unicode

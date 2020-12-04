@@ -3,13 +3,13 @@
     <div class="flex flex-col lg:flex-row ">
       <div class="flex flex-col lg:flex-grow justify-center lg:px-12 py-4">
         <div class="flex flex-grow flex-col lg:flex-row items-center">
-          <div class="flex items-center space-x-2 mb-4 lg:mb-0">
+          <div class="flex items-center space-x-2 mb-4 lg:mb-0 lg:w-1/5">
             <img
               class="w-8 object-contain"
-              :src="airlineProvider"
+              :src="airlineProviderLogo"
               alt="helllo"
             />
-            <p class="font-semibold text-xl">{{ carrierName }}</p>
+            <p class="font-semibold text-xl text-left">{{ carrierName }}</p>
           </div>
           <div class="flex flex-grow items-center justify-center space-x-8">
             <div class="flex-col">
@@ -112,20 +112,20 @@ export default class TicketCard extends Vue {
   @Prop() readonly flight!: Flight;
   itineraries = this.flight.itineraries[0][0];
   segments = this.itineraries.segments;
+
   get departureDate() {
     const date = parseDate(this.itineraries.dep_date);
-    const day = date.getUTCDate();
+    const day = date.getDate();
     const month = getMonthTitle(date.getMonth());
     const weekDay = getDayWeekTitle(date.getDay());
     return `${day} ${month.short}, ${weekDay.short}`.toLowerCase();
   }
   get departureTime() {
     const date = parseDate(this.itineraries.dep_date);
-    const hour = addZero(date.getUTCHours());
-    const minutes = addZero(date.getUTCMinutes());
+    const hour = addZero(date.getHours());
+    const minutes = addZero(date.getMinutes());
     return `${hour}:${minutes}`;
   }
-
   get flightTime() {
     const bestTime = this.flight.best_time;
     const timeObj = secondsToTime(bestTime);
@@ -133,15 +133,9 @@ export default class TicketCard extends Vue {
     const timeString = `${hours} ч ${minutes} м`;
     return timeString;
   }
-
-  get carrierCode() {
-    return this.itineraries.carrier;
-  }
-
   get carrierName() {
     return this.itineraries.carrier_name;
   }
-
   get arrivalDate() {
     const date = parseDate(this.itineraries.arr_date);
     const day = date.getUTCDate();
@@ -149,29 +143,24 @@ export default class TicketCard extends Vue {
     const weekDay = getDayWeekTitle(date.getDay());
     return `${day} ${month.short}, ${weekDay.short}`.toLowerCase();
   }
-
   get arrivalTime() {
     const date = parseDate(this.itineraries.arr_date);
-    const hour = addZero(date.getUTCHours());
-    const minutes = addZero(date.getUTCMinutes());
+    const hour = addZero(date.getHours());
+    const minutes = addZero(date.getMinutes());
     return `${hour}:${minutes}`;
   }
-
   get numberOfLayovers() {
     const flights = this.itineraries.segments;
     return flights.length - 1;
   }
-
   get originCityCode() {
-    return this.itineraries.segments[0].origin_code;
+    return this.segments[0].origin_code;
   }
-
   get departureCityCode() {
     return this.itineraries.segments[this.itineraries.segments.length - 1]
       .dest_code;
   }
-
-  get airlineProvider() {
+  get airlineProviderLogo() {
     const airlineAssetsUrl = 'https://aviata.kz/static/airline-logos/80x80';
     return `${airlineAssetsUrl}/${this.itineraries.carrier}.png`;
   }
